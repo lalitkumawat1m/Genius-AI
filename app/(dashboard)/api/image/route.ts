@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 // import { checkSubscription } from "@/lib/subscription";
-// import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
+import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 
 
 
@@ -35,12 +35,15 @@ export async function POST(
       return new NextResponse("Resolution is required", { status: 400 });
     }
 
-    // const freeTrial = await checkApiLimit();
+    const freeTrial = await checkApiLimit();
     // const isPro = await checkSubscription();
 
     // if (!freeTrial && !isPro) {
     //   return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     // }
+    if(!freeTrial){
+      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    }
 
     const response = await openai.images.generate({
       model: "dall-e-3",
@@ -52,6 +55,7 @@ export async function POST(
     // if (!isPro) {
     //   await incrementApiLimit();
     // }
+    await incrementApiLimit();
 
     return NextResponse.json(response.data);
   } catch (error) {
