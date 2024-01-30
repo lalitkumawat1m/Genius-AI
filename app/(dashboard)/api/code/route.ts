@@ -54,8 +54,8 @@ export async function POST(
     // }
     await incrementApiLimit();
     
-    console.log(response.choices[0].message.content);
-    return NextResponse.json(response.choices[0].message.content);
+    console.log(response.choices[0].message);
+    return NextResponse.json(response.choices[0].message);
   } catch (error) {
     console.log('[CODE_ERROR]', error);
     return new NextResponse("Internal Error", { status: 500 });

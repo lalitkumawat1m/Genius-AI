@@ -53,7 +53,7 @@ export async function POST(
     // }
     await incrementApiLimit();
 
-    return NextResponse.json(response.choices[0].message.content);
+    return NextResponse.json(response.choices[0].message);
    
 
 } catch (error) {

@@ -18,12 +18,12 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Loader } from "@/components/loader";
 import { Empty } from "@/components/empty";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import { useProModal } from "@/hooks/use-pro-modal";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 import { amountOptions, formSchema, resolutionOptions } from "./constants";
 
 const PhotoPage = () => {
-//   const proModal = useProModal();
+  const proModal = useProModal();
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
 
@@ -48,11 +48,11 @@ const PhotoPage = () => {
 
       setPhotos(urls);
     } catch (error: any) {
-    //   if (error?.response?.status === 403) {
-    //     proModal.onOpen();
-    //   } else {
-    //     toast.error("Something went wrong.");
-    //   }
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      } else {
+        toast.error("Something went wrong.");
+      }
     console.log(error);
     } finally {
       router.refresh();
