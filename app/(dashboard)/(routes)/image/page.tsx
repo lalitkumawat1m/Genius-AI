@@ -44,7 +44,10 @@ const PhotoPage = () => {
 
       const response = await axios.post('/api/image', values);
 
-      const urls = response.data.map((image: { url: string }) => image.url);
+      // const urls = response.data.map((image: { url: string }) => image.url);
+
+      const urls = response.data.data.map((image: { base64Image: string }) => `data:image/png;base64,${image.base64Image}`);
+
 
       setPhotos(urls);
     } catch (error: any) {
@@ -184,7 +187,22 @@ const PhotoPage = () => {
                 />
               </div>
               <CardFooter className="p-2">
-                <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
+                {/* <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button> */}
+                <Button
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = src;
+                    link.download = 'generated-image.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  variant="secondary"
+                  className="w-full"
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>

@@ -1,15 +1,19 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+// import OpenAI from "openai";
 
 import { checkSubscription } from "@/lib/subscription";
 import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
+import { GoogleGenAI, Modality } from "@google/genai"
 
-
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+const genAI = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY!,
 });
+
+
+// const openai = new OpenAI({
+//     apiKey: process.env.OPENAI_API_KEY,
+// });
 
 export async function POST(
   req: Request
@@ -42,18 +46,55 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt,
-      n: parseInt(amount, 10),
-      size: resolution,
-    });
+    // const response = await openai.images.generate({
+    //   model: "dall-e-3",
+    //   prompt,
+    //   n: parseInt(amount, 10),
+    //   size: resolution,
+    // });
+
+    const responses = [];
+
+    for (let i = 0; i < amount; i++) {
+      const response = await genAI.models.generateContent({
+        model: "gemini-2.0-flash-preview-image-generation",
+        contents: prompt,
+        config: {
+          responseModalities: [Modality.TEXT, Modality.IMAGE],
+        },
+      });
+
+        const candidates = response.candidates;
+        if (!candidates || candidates.length === 0) {
+          console.warn("No candidates returned.");
+          continue;
+        }
+
+        const candidate = candidates[0];
+        const parts = candidate?.content?.parts;
+
+        if (!parts || parts.length === 0) {
+          console.warn("No parts in the response.");
+          continue;
+        }
+
+        const imagePart = parts.find((p) => p.inlineData?.data);
+
+        if (imagePart && imagePart.inlineData?.data) {
+          responses.push({
+            base64Image: imagePart.inlineData.data,
+          });
+        } else {
+          console.warn("No image data found in parts.");
+        }
+    }
 
     if (!isPro) {
       await incrementApiLimit();
     }
 
-    return NextResponse.json(response.data);
+    // return NextResponse.json(response.data);
+    return NextResponse.json({ data: responses });
   } catch (error) {
     console.log('[IMAGE_ERROR]', error);
     return new NextResponse("Internal Error", { status: 500 });
