@@ -61,7 +61,7 @@ export async function POST(
 
     // return NextResponse.json(response.choices[0].message);
         return NextResponse.json({content:response.text});
-   
+  //  added comment for redeployment on vercel
 
 } catch (error) {
     console.log('[CONVERSATION_ERROR]', error);
