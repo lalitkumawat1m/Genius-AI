@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 // import { ChatCompletionRequestMessage } from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import ReactMarkdown from "react-markdown";
 
 // import { BotAvatar } from "@/components/bot-avatar";
 import { Heading } from "@/components/heading";
@@ -127,8 +128,10 @@ const ConversationPage = () => {
                 )}
               >
                 {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">
-                  {message.content?.toString()}
+                <p className="text-sm prose prose-sm max-w-none">
+                  <ReactMarkdown>
+                    {message.content?.toString() || ""}
+                  </ReactMarkdown>
                 </p>
               </div>
             ))}
