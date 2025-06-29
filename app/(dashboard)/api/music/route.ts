@@ -9,6 +9,10 @@ const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN!,
 });
 
+// for vercel deployment
+export const runtime = "nodejs";
+export const maxDuration = 60; 
+
 export async function POST(
   req: Request
 ) {

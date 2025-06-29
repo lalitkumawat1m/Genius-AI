@@ -16,6 +16,10 @@ const ai = new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY!});
 //     maxRetries:10
 // });
 
+// for vercel deployment
+export const runtime = "nodejs";
+export const maxDuration = 60; 
+
 const instructionMessage: ChatCompletionMessageParam = {
   role: "system",
   content: "You are a code generator. You must answer only in markdown code snippets. Use code comments for explanations."

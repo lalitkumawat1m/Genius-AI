@@ -12,6 +12,7 @@ const ai = new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY!});
 //   apiKey: process.env.OPENAI_API_KEY,
 //  maxRetries:10
 // });
+// for vercel deployment
 export const runtime = "nodejs";
 export const maxDuration = 60; 
 

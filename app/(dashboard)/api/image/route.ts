@@ -15,6 +15,10 @@ const genAI = new GoogleGenAI({
 //     apiKey: process.env.OPENAI_API_KEY,
 // });
 
+// for vercel deployment
+export const runtime = "nodejs";
+export const maxDuration = 60; 
+
 export async function POST(
   req: Request
 ) {
