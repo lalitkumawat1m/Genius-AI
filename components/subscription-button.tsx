@@ -27,7 +27,7 @@ export const SubscriptionButton = ({
       setLoading(false);
     }
   };
-
+ 
   return (
     <Button variant={isPro ? "default" : "premium"} disabled={loading} onClick={onClick} >
       {isPro ? "Manage Subscription" : "Upgrade"}
