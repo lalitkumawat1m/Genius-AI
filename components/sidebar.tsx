@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from 'next/font/google'
-import { Code, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, VideoIcon } from "lucide-react";
+import { Code, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, VideoIcon, SquarePen } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -29,6 +29,12 @@ const routes = [
     icon: ImageIcon,
     color: "text-pink-700",
     href: '/image',
+  },
+    {
+    label: 'AI Image Editor',
+    icon: SquarePen,
+    color: "text-pink-700",
+    href: '/image-editor',
   },
   {
     label: 'Video Generation',

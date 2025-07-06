@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^4.29.5",
     "@google/genai": "^1.7.0",
     "@google/generative-ai": "^0.24.1",
+    "@gradio/client": "^1.15.4",
     "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "^5.8.1",
     "@radix-ui/react-avatar": "^1.0.4",

@@ -1,4 +1,4 @@
-import { Code, ImageIcon, MessageSquare, Music, VideoIcon } from "lucide-react";
+import { Code, ImageIcon, MessageSquare, Music, VideoIcon, SquarePen } from "lucide-react";
 
 export const MAX_FREE_COUNTS = 50;
 
@@ -23,6 +23,13 @@ export const tools = [
     color: "text-pink-700",
     bgColor: "bg-pink-700/10",
     href: '/image',
+  },
+    {
+    label: 'AI Image Editor',
+    icon: SquarePen,
+    color: "text-pink-700",
+    bgColor: "bg-pink-700/10",
+    href: '/image-editor',
   },
   {
     label: 'Video Generation',

@@ -23,7 +23,7 @@ export const LandingHero = () => {
                 "Music Generation.",
                 "Video Generation.",
                 "Photo Generation.",
-                "Blog Writing."
+                "Image Editing."
               ],
               autoStart: true,
               loop: true,
