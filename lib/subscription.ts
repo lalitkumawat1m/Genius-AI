@@ -16,20 +16,32 @@ export const checkSubscription = async () => {
       userId: userId,
     },
     select: {
-      stripeSubscriptionId: true,
-      stripeCurrentPeriodEnd: true,
-      stripeCustomerId: true,
-      stripePriceId: true,
+      lemonSubscriptionId: true,
+      lemonCurrentPeriodEnd: true,
+      lemonCustomerId: true,
+      lemonStatus: true,
+      // stripeSubscriptionId: true,
+      // stripeCurrentPeriodEnd: true,
+      // stripeCustomerId: true,
+      // stripePriceId: true,
     },
   })
 
-  if (!userSubscription) {
+  // if (!userSubscription) {
+  //   return false;
+  // }
+    if (
+    !userSubscription ||
+    !userSubscription.lemonSubscriptionId ||
+    !userSubscription.lemonCurrentPeriodEnd
+  ) {
     return false;
   }
 
+  
   const isValid =
-    userSubscription.stripePriceId &&
-    userSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now()
+     ["active", "on_trial", "paused"].includes(userSubscription.lemonStatus || "") &&
+    userSubscription.lemonCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now()
 
   return !!isValid;
 };

@@ -27,7 +27,7 @@ export const ProModal = () => {
   const onSubscribe = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/api/stripe");
+      const response = await axios.get("/api/checkout");
 
       window.location.href = response.data.url;
     } catch (error) {
