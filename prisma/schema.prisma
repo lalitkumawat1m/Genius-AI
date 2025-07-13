@@ -29,4 +29,18 @@ model UserSubscription {
   lemonProductId          String?  @map(name: "lemon_product_id")
   lemonStatus             String?  @map(name: "lemon_status") // e.g. active, expired
   lemonCurrentPeriodEnd   DateTime? @map(name: "lemon_current_period_end")
+
+  // 🔹 Razorpay fields
+  razorpayPaymentId     String?  @map("razorpay_payment_id")
+  razorpayOrderId       String?  @map("razorpay_order_id")
+  razorpayInvoiceId     String?  @map("razorpay_invoice_id")
+  razorpayTokenId       String?  @map("razorpay_token_id")
+  razorpayEmail         String?  @map("razorpay_email")
+  razorpayContact       String?  @map("razorpay_contact")
+  razorpayStatus        String?  @map("razorpay_status") // e.g. captured, failed
+  isActive              Boolean @default(false)
+  razorpayMethod        String?  @map("razorpay_method") // e.g. card, upi
+  razorpayAmount        Int?     @map("razorpay_amount") // in paise
+  razorpayCurrency      String?  @map("razorpay_currency")
+  razorpayCapturedAt    DateTime? @map("razorpay_captured_at") // from `created_at` Unix timestamp
 }
