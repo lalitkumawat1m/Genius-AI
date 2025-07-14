@@ -4,10 +4,11 @@ import { NextResponse } from "next/server";
 
 import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/subscription";
+import { client } from "@gradio/client";
 
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN!,
-});
+// const replicate = new Replicate({
+//   auth: process.env.REPLICATE_API_TOKEN!,
+// });
 
 // for vercel deployment
 export const runtime = "nodejs";
@@ -35,16 +36,24 @@ export async function POST(
     if (!freeTrial && !isPro) {
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
-    
+     
 
-    const response = await replicate.run(
-      "riffusion/riffusion:8cf61ea6c56afd61d8f5b9ffd14d7c216c0a93844ce2d82ac1c9ecc9c7f24e05",
-      {
-        input: {
-          prompt_a: prompt
-        }
-      }
-    );
+    // const response = await replicate.run(
+    //   "riffusion/riffusion:8cf61ea6c56afd61d8f5b9ffd14d7c216c0a93844ce2d82ac1c9ecc9c7f24e05",
+    //   {
+    //     input: {
+    //       prompt_a: prompt
+    //     }
+    //   }
+    // );
+
+    	
+						
+	const app = await client("https://facebook-musicgen.hf.space/");
+	const response = await app.predict(0, [		
+				prompt, // string  in 'Describe your music' Textbox component
+	]);
+
 
     if (!isPro) {
       await incrementApiLimit();

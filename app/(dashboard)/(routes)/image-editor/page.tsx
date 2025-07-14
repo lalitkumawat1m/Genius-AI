@@ -14,12 +14,16 @@ import { Heading } from "@/components/heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+} from "@/components/ui/form";
 import { Loader } from "@/components/loader";
 import { Empty } from "@/components/empty";
 
 import { useProModal } from "@/hooks/use-pro-modal";
-
 import { formSchema } from "./constants";
 
 const PhotoEditorPage = () => {
@@ -32,13 +36,12 @@ const PhotoEditorPage = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
-    }
+    },
   });
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
     if (!imageFile) {
       toast.error("Please upload an image");
       return;
@@ -53,12 +56,10 @@ const PhotoEditorPage = () => {
 
       const res = await axios.post("/api/image-editor", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // ✅ force proper content-type
+          "Content-Type": "multipart/form-data",
         },
       });
 
-
-      // const data = await res.json();
       setPhotos([res.data.url]);
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -66,16 +67,14 @@ const PhotoEditorPage = () => {
       } else {
         toast.error("Something went wrong.");
       }
-      console.log(error);
+      console.error(error);
     } finally {
       router.refresh();
     }
-
-  }
+  };
 
   return (
-
-    <div>
+    <div className="space-y-6">
       <Heading
         title="AI Image Editor"
         description="Just Type It. We’ll Edit It."
@@ -88,75 +87,77 @@ const PhotoEditorPage = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="
-          rounded-lg border w-full p-4 px-3 md:px-6
-          focus-within:shadow-sm grid grid-cols-12 gap-2
-        "
+            className="bg-white/5 backdrop-blur-sm border border-muted rounded-xl p-6 space-y-4 shadow-sm"
           >
-            {/* 📂  Image upload  */}
-            <div className="col-span-12 lg:col-span-3 flex items-center gap-2">
-              <Input
-                type="file"
-                accept="image/*"
-                disabled={isLoading}
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="md:col-span-4 flex items-center">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  disabled={isLoading}
+                  onChange={(e) =>
+                    setImageFile(e.target.files?.[0] || null)
+                  }
+                />
+              </div>
+
+              <FormField
+                name="prompt"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-6">
+                    <FormControl>
+                      <Input
+                        placeholder="E.g. 'Make it look like Van Gogh painted this'"
+                        {...field}
+                        disabled={isLoading}
+                        className="focus-visible:ring-pink-600"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
               />
-              {/* <Upload className="h-4 w-4 text-muted-foreground" /> */}
+
+              <div className="md:col-span-2">
+                <Button
+                  type="submit"
+                  className="w-full h-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processing..." : "Edit Image"}
+                </Button>
+              </div>
             </div>
-
-            {/* ✏️  Prompt  */}
-            <FormField
-              name="prompt"
-              render={({ field }) => (
-                <FormItem className="col-span-12 lg:col-span-7">
-                  <FormControl className="m-0 p-0">
-                    <Input
-                      className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                      disabled={isLoading}
-                      placeholder="E.g. 'Make it look like Van Gogh painted this'"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {/* ▶️  Submit  */}
-            <Button
-              className="col-span-12 lg:col-span-2 w-full"
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? "Processing…" : "Edit Image"}
-            </Button>
           </form>
         </Form>
 
         {isLoading && (
-          <div className="p-20">
+          <div className="p-20 flex justify-center">
             <Loader />
           </div>
         )}
 
-        {photos.length === 0 && !isLoading && <Empty label="No image edited." />}
+        {!isLoading && photos.length === 0 && (
+          <Empty label="No image edited." />
+        )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
           {photos.map((src) => (
-            <Card key={src} className="rounded-lg overflow-hidden">
-              <div className="relative w-full" style={{ height: "auto" }}>
+            <Card
+              key={src}
+              className="overflow-hidden rounded-2xl border shadow-lg hover:shadow-xl transition w-full max-w-xl mx-auto"
+            >
+              <div className="relative aspect-[4/3] w-full h-auto">
                 <Image
                   src={src}
-                  alt="Generated"
-                  width={1024}
-                  height={1024}
-                  className="w-full h-auto object-contain"
-
+                  alt="Edited Image"
+                  fill
+                  className="object-cover"
                 />
               </div>
-              <CardFooter className="p-2">
+              <CardFooter className="p-6">
                 <Button
                   variant="secondary"
-                  className="w-full"
+                  className="w-full text-base py-2.5"
                   onClick={() => {
                     const link = document.createElement("a");
                     link.href = src;
@@ -164,17 +165,17 @@ const PhotoEditorPage = () => {
                     link.click();
                   }}
                 >
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="w-5 h-5 mr-2" />
                   Download
                 </Button>
               </CardFooter>
             </Card>
+
           ))}
         </div>
       </div>
     </div>
   );
-
-}
+};
 
 export default PhotoEditorPage;

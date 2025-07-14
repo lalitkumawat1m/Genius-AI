@@ -17,6 +17,7 @@ import { Loader } from "@/components/loader";
 import { Empty } from "@/components/empty";
 import { useProModal } from "@/hooks/use-pro-modal";
 
+
 import { formSchema } from "./constants";
 
 const MusicPage = () => {
@@ -40,7 +41,24 @@ const MusicPage = () => {
       const response = await axios.post('/api/music', values);
       console.log(response)
 
-      setMusic(response.data.audio);
+      const result = response.data;        // the full response
+      const files = result?.data;          // this is the inner array you're looking for
+
+      const mp4 = files?.[0]?.[0]?.name;
+      const wav = files?.[1]?.name;
+
+      const baseURL = "https://facebook-musicgen.hf.space/file=";
+      const wavURL = wav ? baseURL + encodeURIComponent(wav) : undefined;
+      const mp4URL = mp4 ? baseURL + encodeURIComponent(mp4) : undefined;
+
+      if (wavURL || mp4URL) {
+        const publicUrl = wavURL || mp4URL;
+        const proxyUrl = `/api/proxy-audio?url=${encodeURIComponent(publicUrl!)}`;
+        setMusic(proxyUrl);
+        console.log("publicUrl:", publicUrl);
+      } else {
+        console.error("No music file found");
+      }
       form.reset();
     } catch (error: any) {
       if (error?.response?.status === 403) {
@@ -48,13 +66,13 @@ const MusicPage = () => {
       } else {
         toast.error("Something went wrong.");
       }
-    console.log(error);
+      console.log(error);
     } finally {
       router.refresh();
     }
   }
 
-  return ( 
+  return (
     <div>
       <Heading
         title="Music Generation"
@@ -65,8 +83,8 @@ const MusicPage = () => {
       />
       <div className="px-4 lg:px-8">
         <Form {...form}>
-          <form 
-            onSubmit={form.handleSubmit(onSubmit)} 
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
             className="
               rounded-lg 
               border 
@@ -87,8 +105,8 @@ const MusicPage = () => {
                   <FormControl className="m-0 p-0">
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                      disabled={isLoading} 
-                      placeholder="Piano solo" 
+                      disabled={isLoading}
+                      placeholder="Piano solo"
                       {...field}
                     />
                   </FormControl>
@@ -110,12 +128,12 @@ const MusicPage = () => {
         )}
         {music && (
           <audio controls className="w-full mt-8">
-            <source src={music} />
+            <source src={music} type={music.endsWith(".wav") ? "audio/wav" : "audio/mp4"} />
           </audio>
         )}
       </div>
     </div>
-   );
+  );
 }
- 
+
 export default MusicPage;
