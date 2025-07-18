@@ -31,6 +31,7 @@ const PhotoEditorPage = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,6 +85,18 @@ const PhotoEditorPage = () => {
       />
 
       <div className="px-4 lg:px-8">
+        {preview && (
+          <div className="mb-6">
+            <div className="font-bold text-lg mb-2">Your Image</div>
+            <div className=" rounded-2xl p-4 flex justify-center">
+              <img
+                src={preview}
+                alt="Preview"
+                className="rounded-xl max-w-full max-h-[250px] object-contain"
+              />
+            </div>
+          </div>
+        )}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -95,8 +108,15 @@ const PhotoEditorPage = () => {
                   type="file"
                   accept="image/*"
                   disabled={isLoading}
-                  onChange={(e) =>
-                    setImageFile(e.target.files?.[0] || null)
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setImageFile(file);
+                    if (file) {
+                      setPreview(URL.createObjectURL(file));
+                    } else {
+                      setPreview(null);
+                    }
+                  }
                   }
                 />
               </div>
